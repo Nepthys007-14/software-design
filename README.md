@@ -14,8 +14,10 @@ This repository branch contains the completed tasks for Week 3 of the Software D
 ## Contents
 The solution explorer in this branch is exclusively tailored to display and build the designated Week 3 projects. All implementation logic has been finalized and validated according to the module instructions.
 
-## Weekly Reflection
-This week was dedicated to Object-Oriented Programming (OOP) principles, specifically focusing on Inheritance and Polymorphism.
-- **Task 1-2**: Built a base Book class and derived classes (Magazine and Ebook) to model a bookstore system. 
-- **Task 3**: Expanded the system by introducing additional subclasses like Textbook and AudioBook, utilizing polymorphism to override the GetInfo() method and display customized information for each book type in a WinForms ListBox.
+## Weekly Summary
+This week focused extensively on core Object-Oriented Programming principles, specifically Inheritance and Polymorphism. The tasks revolved around building a complete Bookstore System architecture.
 
+### Task Highlights
+* **Task 1**: Established the foundational hierarchy by creating a base Book class alongside derived classes such as Magazine and Ebook.
+* **Task 2**: Expanded the system to ensure robust object structures and data encapsulation.
+* **Task 3**: Introduced further derivations like AudioBook and Textbook, heavily utilizing method overriding to demonstrate polymorphic behavior across different item types.
