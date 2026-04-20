@@ -14,9 +14,9 @@ This repository branch contains the completed tasks for Week 2 of the Software D
 ## Contents
 The solution explorer in this branch is exclusively tailored to display and build the designated Week 2 projects. All implementation logic has been finalized and validated according to the module instructions.
 
-## Weekly Reflection
-This week, I explored the concept of recursion in C# and how to apply it to solve mathematical and array-based problems, while handling edge cases and input validation.
-- **Task 1**: Implemented a recursive Factorial calculation method with proper error handling for negative and excessively large inputs.
-- **Task 2**: Created a recursive function to compute the sum of elements within an array.
-- **Task 3**: Developed recursive functions to compute the Fibonacci sequence and calculate mathematical powers, reinforcing the principles of base cases and recursive steps.
+## Weekly Summary
+This week advanced into more complex Windows Forms interactions and introduced foundational concepts of application state. The tasks focused on data management and expanding application capabilities.
 
+### Task Highlights
+* **Task 1 - 2**: Focused on managing data and controlling the flow of information within the application UI.
+* **Task 3 - 4**: Implemented more complex logic linking user inputs to application behavior and exploring further UI controls.
