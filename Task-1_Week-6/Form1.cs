@@ -7,6 +7,9 @@ namespace Task_1_Week_6
     public partial class Form1 : Form
     {
         private BookstoreContext _context;
+        private int? _selectedBookId;
+        private bool _isLoading;
+        private List<Book>? _loadedBooks;
 
         public Form1()
         {
@@ -14,251 +17,408 @@ namespace Task_1_Week_6
             _context = new BookstoreContext();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
+            _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
+            await LoadAuthorsAsync();
+            await LoadBooksAsync();
+            toolStripStatusLabel.Text = "Ready";
         }
 
-        private async void btnFetchBooks_Click(object sender, EventArgs e)
+        private async Task LoadAuthorsAsync()
         {
-            btnFetchBooks.Enabled = false;
+            _isLoading = true;
+            var authors = await _context.Authors.OrderBy(a => a.LastName).ToListAsync();
+            cmbAuthors.DataSource = authors;
+            cmbAuthors.DisplayMember = "FullName";
+            cmbAuthors.ValueMember = "Id";
+            _isLoading = false;
+        }
+
+        private async Task LoadBooksAsync()
+        {
+            _loadedBooks = await _context.Books
+                .AsNoTracking()
+                .Include(b => b.Author)
+                .OrderBy(b => b.Title)
+                .ToListAsync();
+
+            var displayData = _loadedBooks.Select(b => new
+            {
+                b.Id,
+                b.Title,
+                b.ISBN,
+                b.Price,
+                Author = b.Author != null ? $"{b.Author.FirstName} {b.Author.LastName}" : ""
+            }).ToList();
+
+            dgvBooks.DataSource = null;
+            dgvBooks.DataSource = displayData;
+            if (dgvBooks.Columns["Id"] != null)
+                dgvBooks.Columns["Id"]!.Visible = false;
+        }
+
+        private void cmbAuthors_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isLoading || cmbAuthors.SelectedItem is not Author author) return;
+
+            txtFirstName.Text = author.FirstName;
+            txtLastName.Text = author.LastName;
+            txtBio.Text = author.Bio;
+        }
+
+        private void dgvBooks_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvBooks.CurrentRow?.Cells["Id"].Value is not int bookId) return;
+
+            var book = _loadedBooks?.FirstOrDefault(b => b.Id == bookId);
+            if (book == null) return;
+
+            _selectedBookId = bookId;
+
+            txtTitle.Text = book.Title;
+            txtISBN.Text = book.ISBN;
+            txtPrice.Text = book.Price.ToString();
+
+            if (book.Author != null)
+            {
+                cmbAuthors.SelectedValue = book.AuthorId;
+                txtFirstName.Text = book.Author.FirstName;
+                txtLastName.Text = book.Author.LastName;
+                txtBio.Text = book.Author.Bio;
+            }
+        }
+
+        private void ClearFields()
+        {
+            txtTitle.Clear();
+            txtISBN.Clear();
+            txtPrice.Clear();
+            txtFirstName.Clear();
+            txtLastName.Clear();
+            txtBio.Clear();
+            _selectedBookId = null;
+            if (cmbAuthors.Items.Count > 0)
+                cmbAuthors.SelectedIndex = 0;
+        }
+
+        private void SetControlsEnabled(bool enabled)
+        {
+            btnAddBook.Enabled = enabled;
+            btnAddAuthor.Enabled = enabled;
+            btnUpdate.Enabled = enabled;
+            btnDelete.Enabled = enabled;
+            btnRefresh.Enabled = enabled;
+            btnSearch.Enabled = enabled;
+        }
+
+        private async void btnAddAuthor_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtFirstName.Text) ||
+                string.IsNullOrWhiteSpace(txtLastName.Text))
+            {
+                MessageBox.Show("First Name and Last Name are required.", "Validation Error");
+                return;
+            }
+
+            SetControlsEnabled(false);
+            progressBarOp.Value = 10;
+            toolStripStatusLabel.Text = "Adding author...";
+            lblProgressStatus.Text = "Adding author...";
+
             try
             {
-                IProgress<int> progress = new Progress<int>(p =>
+                var author = new Author
                 {
-                    progressBarOp.Value = p;
-                    lblFetchStatus.Text = $"{p}%";
-                });
+                    FirstName = txtFirstName.Text.Trim(),
+                    LastName = txtLastName.Text.Trim(),
+                    Bio = txtBio.Text.Trim()
+                };
 
-                progress.Report(10);
+                _context.Authors.Add(author);
+                await _context.SaveChangesAsync();
 
-                var books = await Task.Run(async () =>
-                {
-                    await Task.Delay(300);
-                    progress.Report(40);
+                progressBarOp.Value = 60;
+                toolStripStatusLabel.Text = "Refreshing authors...";
 
-                    using var ctx = new BookstoreContext();
-                    var result = await ctx.Books
-                        .AsNoTracking()
-                        .Include(b => b.Author)
-                        .OrderBy(b => b.Title)
-                        .ToListAsync();
+                await LoadAuthorsAsync();
+                cmbAuthors.SelectedValue = author.Id;
 
-                    progress.Report(80);
-                    await Task.Delay(200);
+                progressBarOp.Value = 100;
+                toolStripStatusLabel.Text = "Author added successfully";
+                lblProgressStatus.Text = "Author added successfully";
 
-                    return result;
-                });
-
-                progress.Report(100);
-
-                listBoxBooks.DataSource = null;
-                listBoxBooks.DisplayMember = "DisplayText";
-                listBoxBooks.ValueMember = "Id";
-                listBoxBooks.DataSource = books
-                    .Select(b => new BookDisplay
-                    {
-                        Id = b.Id,
-                        DisplayText = b.Author != null
-                            ? $"{b.Title} by {b.Author.FirstName}"
-                            : b.Title
-                    })
-                    .ToList();
-
-                await Task.Delay(500);
-                progress.Report(0);
-                lblFetchStatus.Text = $"Loaded {books.Count} books";
+                await Task.Delay(1000);
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Ready";
+                lblProgressStatus.Text = "Ready";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error fetching books: {ex.Message}", "Error");
-                lblFetchStatus.Text = "Error";
+                _context.ChangeTracker.Clear();
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Error";
+                lblProgressStatus.Text = "Error";
+                MessageBox.Show($"Error adding author: {ex.Message}", "Error");
             }
             finally
             {
-                btnFetchBooks.Enabled = true;
+                SetControlsEnabled(true);
             }
         }
 
         private async void btnAddBook_Click(object sender, EventArgs e)
         {
-            var authorName = txtAuthorName.Text.Trim();
-            var bookTitle = txtBookTitle.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(authorName) || string.IsNullOrWhiteSpace(bookTitle))
+            if (string.IsNullOrWhiteSpace(txtTitle.Text))
             {
-                MessageBox.Show("Author name and book title are required.", "Validation Error");
+                MessageBox.Show("Title is required.", "Validation Error");
                 return;
             }
 
-            btnAddBook.Enabled = false;
+            if (cmbAuthors.SelectedItem is not Author selectedAuthor)
+            {
+                MessageBox.Show("Select an existing author or add a new one first.", "Validation Error");
+                return;
+            }
+
+            if (!decimal.TryParse(txtPrice.Text, out var price))
+                price = 0;
+
+            SetControlsEnabled(false);
+            progressBarOp.Value = 10;
+            toolStripStatusLabel.Text = "Adding book...";
+            lblProgressStatus.Text = "Adding book...";
+
             try
             {
-                IProgress<int> progress = new Progress<int>(p =>
-                {
-                    progressBarOp.Value = p;
-                    lblFetchStatus.Text = $"{p}%";
-                });
-
-                progress.Report(20);
-
-                var author = new Author { FirstName = authorName };
-
-                _context.Authors.Add(author);
-                await _context.SaveChangesAsync();
-                progress.Report(50);
-
                 var book = new Book
                 {
-                    Title = bookTitle,
-                    AuthorId = author.Id
+                    Title = txtTitle.Text.Trim(),
+                    ISBN = txtISBN.Text.Trim(),
+                    Price = price,
+                    AuthorId = selectedAuthor.Id
                 };
 
                 _context.Books.Add(book);
                 await _context.SaveChangesAsync();
-                progress.Report(100);
 
-                txtAuthorName.Clear();
-                txtBookTitle.Clear();
-                lblFetchStatus.Text = "Book added successfully";
+                progressBarOp.Value = 60;
+                toolStripStatusLabel.Text = "Refreshing data...";
 
-                await Task.Delay(500);
-                progress.Report(0);
+                await LoadBooksAsync();
+                ClearFields();
+
+                progressBarOp.Value = 100;
+                toolStripStatusLabel.Text = "Book added successfully";
+                lblProgressStatus.Text = "Book added successfully";
+
+                await Task.Delay(1000);
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Ready";
+                lblProgressStatus.Text = "Ready";
             }
             catch (Exception ex)
             {
                 _context.ChangeTracker.Clear();
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Error";
+                lblProgressStatus.Text = "Error";
                 MessageBox.Show($"Error adding book: {ex.Message}", "Error");
             }
             finally
             {
-                btnAddBook.Enabled = true;
+                SetControlsEnabled(true);
             }
         }
 
         private async void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(txtUpdateBookId.Text.Trim(), out var bookId))
+            if (_selectedBookId == null)
             {
-                MessageBox.Show("Enter a valid Book ID.", "Validation Error");
+                MessageBox.Show("Please select a book to update.", "No Selection");
                 return;
             }
 
-            var newTitle = txtUpdateTitle.Text.Trim();
-            var newAuthorName = txtUpdateAuthorName.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(newTitle) && string.IsNullOrWhiteSpace(newAuthorName))
+            if (string.IsNullOrWhiteSpace(txtTitle.Text))
             {
-                MessageBox.Show("Enter a new title or author name.", "Validation Error");
+                MessageBox.Show("Title is required.", "Validation Error");
                 return;
             }
 
-            btnUpdate.Enabled = false;
+            if (!decimal.TryParse(txtPrice.Text, out var price))
+                price = 0;
+
+            SetControlsEnabled(false);
+            progressBarOp.Value = 10;
+            toolStripStatusLabel.Text = "Updating book...";
+            lblProgressStatus.Text = "Updating book...";
+
             try
             {
-                IProgress<int> progress = new Progress<int>(p =>
-                {
-                    progressBarOp.Value = p;
-                    lblFetchStatus.Text = $"{p}%";
-                });
-
-                progress.Report(30);
-
                 var book = await _context.Books
                     .Include(b => b.Author)
-                    .FirstOrDefaultAsync(b => b.Id == bookId);
+                    .FirstOrDefaultAsync(b => b.Id == _selectedBookId.Value);
 
                 if (book == null)
                 {
-                    MessageBox.Show("Book not found.", "Not Found");
+                    MessageBox.Show("Book no longer exists in the database.", "Not Found");
+                    ClearFields();
+                    await LoadBooksAsync();
+                    progressBarOp.Value = 0;
+                    toolStripStatusLabel.Text = "Ready";
+                    lblProgressStatus.Text = "Ready";
                     return;
                 }
 
-                progress.Report(60);
+                book.Title = txtTitle.Text.Trim();
+                book.ISBN = txtISBN.Text.Trim();
+                book.Price = price;
 
-                if (!string.IsNullOrWhiteSpace(newTitle))
-                    book.Title = newTitle;
+                if (cmbAuthors.SelectedValue is int selectedAuthorId)
+                    book.AuthorId = selectedAuthorId;
 
-                if (!string.IsNullOrWhiteSpace(newAuthorName) && book.Author != null)
-                    book.Author.FirstName = newAuthorName;
+                var author = await _context.Authors.FindAsync(book.AuthorId);
+                if (author != null)
+                {
+                    author.FirstName = txtFirstName.Text.Trim();
+                    author.LastName = txtLastName.Text.Trim();
+                    author.Bio = txtBio.Text.Trim();
+                }
 
                 await _context.SaveChangesAsync();
-                progress.Report(100);
 
-                txtUpdateBookId.Clear();
-                txtUpdateTitle.Clear();
-                txtUpdateAuthorName.Clear();
-                lblFetchStatus.Text = "Book updated successfully";
+                progressBarOp.Value = 60;
+                toolStripStatusLabel.Text = "Refreshing data...";
 
-                await Task.Delay(500);
-                progress.Report(0);
+                await LoadBooksAsync();
+                await LoadAuthorsAsync();
+                ClearFields();
+
+                progressBarOp.Value = 100;
+                toolStripStatusLabel.Text = "Book updated successfully";
+                lblProgressStatus.Text = "Book updated successfully";
+
+                await Task.Delay(1000);
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Ready";
+                lblProgressStatus.Text = "Ready";
             }
             catch (Exception ex)
             {
                 _context.ChangeTracker.Clear();
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Error";
+                lblProgressStatus.Text = "Error";
                 MessageBox.Show($"Error updating book: {ex.Message}", "Error");
             }
             finally
             {
-                btnUpdate.Enabled = true;
+                SetControlsEnabled(true);
             }
         }
 
         private async void btnDelete_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(txtDeleteBookId.Text.Trim(), out var bookId))
+            if (_selectedBookId == null)
             {
-                MessageBox.Show("Enter a valid Book ID.", "Validation Error");
+                MessageBox.Show("Please select a book to delete.", "No Selection");
                 return;
             }
 
-            var confirm = MessageBox.Show(
-                $"Delete book with ID {bookId}?",
-                "Confirm Delete",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+            var result = MessageBox.Show("Are you sure you want to delete this book?", "Confirm Delete",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
-            if (confirm != DialogResult.Yes) return;
+            if (result != DialogResult.Yes) return;
 
-            btnDelete.Enabled = false;
+            SetControlsEnabled(false);
+            progressBarOp.Value = 10;
+            toolStripStatusLabel.Text = "Deleting book...";
+            lblProgressStatus.Text = "Deleting book...";
+
             try
             {
-                IProgress<int> progress = new Progress<int>(p =>
+                var bookToDelete = await _context.Books.FindAsync(_selectedBookId.Value);
+                if (bookToDelete == null)
                 {
-                    progressBarOp.Value = p;
-                    lblFetchStatus.Text = $"{p}%";
-                });
-
-                progress.Report(30);
-
-                var book = await _context.Books.FindAsync(bookId);
-
-                if (book == null)
-                {
-                    MessageBox.Show("Book not found.", "Not Found");
+                    MessageBox.Show("Book no longer exists in the database.", "Not Found");
+                    ClearFields();
+                    await LoadBooksAsync();
+                    progressBarOp.Value = 0;
+                    toolStripStatusLabel.Text = "Ready";
+                    lblProgressStatus.Text = "Ready";
                     return;
                 }
 
-                progress.Report(60);
-
-                _context.Books.Remove(book);
+                _context.Books.Remove(bookToDelete);
                 await _context.SaveChangesAsync();
-                progress.Report(100);
 
-                txtDeleteBookId.Clear();
-                lblFetchStatus.Text = "Book deleted successfully";
+                progressBarOp.Value = 60;
+                toolStripStatusLabel.Text = "Refreshing data...";
 
-                await Task.Delay(500);
-                progress.Report(0);
+                ClearFields();
+                await LoadAuthorsAsync();
+                await LoadBooksAsync();
+
+                progressBarOp.Value = 100;
+                toolStripStatusLabel.Text = "Book deleted successfully";
+                lblProgressStatus.Text = "Book deleted successfully";
+
+                await Task.Delay(1000);
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Ready";
+                lblProgressStatus.Text = "Ready";
             }
             catch (Exception ex)
             {
                 _context.ChangeTracker.Clear();
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Error";
+                lblProgressStatus.Text = "Error";
                 MessageBox.Show($"Error deleting book: {ex.Message}", "Error");
             }
             finally
             {
-                btnDelete.Enabled = true;
+                SetControlsEnabled(true);
+            }
+        }
+
+        private async void btnRefresh_Click(object sender, EventArgs e)
+        {
+            SetControlsEnabled(false);
+            progressBarOp.Value = 30;
+            toolStripStatusLabel.Text = "Refreshing...";
+            lblProgressStatus.Text = "Refreshing...";
+
+            try
+            {
+                _context.ChangeTracker.Clear();
+                await LoadAuthorsAsync();
+
+                progressBarOp.Value = 60;
+
+                await LoadBooksAsync();
+                ClearFields();
+
+                progressBarOp.Value = 100;
+                toolStripStatusLabel.Text = "Data refreshed";
+                lblProgressStatus.Text = "Data refreshed";
+
+                await Task.Delay(800);
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Ready";
+                lblProgressStatus.Text = "Ready";
+            }
+            catch (Exception ex)
+            {
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Error";
+                lblProgressStatus.Text = "Error";
+                MessageBox.Show($"Error refreshing data: {ex.Message}", "Error");
+            }
+            finally
+            {
+                SetControlsEnabled(true);
             }
         }
 
@@ -268,21 +428,18 @@ namespace Task_1_Week_6
 
             if (string.IsNullOrWhiteSpace(query))
             {
-                MessageBox.Show("Enter a title to search for.", "Validation Error");
+                await LoadBooksAsync();
+                toolStripStatusLabel.Text = "Showing all books";
                 return;
             }
 
-            btnSearch.Enabled = false;
+            SetControlsEnabled(false);
+            progressBarOp.Value = 20;
+            toolStripStatusLabel.Text = "Searching...";
+            lblProgressStatus.Text = "Searching...";
+
             try
             {
-                IProgress<int> progress = new Progress<int>(p =>
-                {
-                    progressBarOp.Value = p;
-                    lblFetchStatus.Text = $"{p}%";
-                });
-
-                progress.Report(30);
-
                 var results = await _context.Books
                     .AsNoTracking()
                     .Include(b => b.Author)
@@ -290,41 +447,42 @@ namespace Task_1_Week_6
                     .OrderBy(b => b.Title)
                     .ToListAsync();
 
-                progress.Report(80);
+                progressBarOp.Value = 70;
 
-                listBoxBooks.DataSource = null;
-                listBoxBooks.DisplayMember = "DisplayText";
-                listBoxBooks.ValueMember = "Id";
-                listBoxBooks.DataSource = results
-                    .Select(b => new BookDisplay
-                    {
-                        Id = b.Id,
-                        DisplayText = b.Author != null
-                            ? $"{b.Title} by {b.Author.FirstName}"
-                            : b.Title
-                    })
-                    .ToList();
+                var displayData = results.Select(b => new
+                {
+                    b.Id,
+                    b.Title,
+                    b.ISBN,
+                    b.Price,
+                    Author = b.Author != null ? $"{b.Author.FirstName} {b.Author.LastName}" : ""
+                }).ToList();
 
-                progress.Report(100);
-                lblFetchStatus.Text = $"Found {results.Count} books";
+                dgvBooks.DataSource = null;
+                dgvBooks.DataSource = displayData;
+                if (dgvBooks.Columns["Id"] != null)
+                    dgvBooks.Columns["Id"]!.Visible = false;
 
-                await Task.Delay(500);
-                progress.Report(0);
+                progressBarOp.Value = 100;
+                toolStripStatusLabel.Text = $"Found {results.Count} books";
+                lblProgressStatus.Text = $"Found {results.Count} books";
+
+                await Task.Delay(1000);
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Ready";
+                lblProgressStatus.Text = "Ready";
             }
             catch (Exception ex)
             {
+                progressBarOp.Value = 0;
+                toolStripStatusLabel.Text = "Error";
+                lblProgressStatus.Text = "Error";
                 MessageBox.Show($"Error searching books: {ex.Message}", "Error");
             }
             finally
             {
-                btnSearch.Enabled = true;
+                SetControlsEnabled(true);
             }
         }
-    }
-
-    public class BookDisplay
-    {
-        public int Id { get; set; }
-        public string DisplayText { get; set; } = string.Empty;
     }
 }

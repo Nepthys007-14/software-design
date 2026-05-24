@@ -3,35 +3,37 @@ namespace Task_1_Week_6
     partial class Form1
     {
         private System.ComponentModel.IContainer components = null;
-
-        private ListBox listBoxBooks;
-        private Button btnFetchBooks;
-        private Button btnAddBook;
-        private Button btnUpdate;
-        private Button btnDelete;
-        private Button btnSearch;
-        private TextBox txtAuthorName;
-        private TextBox txtBookTitle;
-        private TextBox txtUpdateBookId;
-        private TextBox txtUpdateTitle;
-        private TextBox txtUpdateAuthorName;
-        private TextBox txtDeleteBookId;
+        private System.Windows.Forms.DataGridView dgvBooks;
+        private TextBox txtTitle;
+        private TextBox txtISBN;
+        private TextBox txtPrice;
+        private TextBox txtFirstName;
+        private TextBox txtLastName;
+        private TextBox txtBio;
         private TextBox txtSearch;
-        private ProgressBar progressBarOp;
-        private Label lblAuthorName;
-        private Label lblBookTitle;
-        private Label lblUpdateBookId;
-        private Label lblUpdateTitle;
-        private Label lblUpdateAuthor;
-        private Label lblDeleteBookId;
+        private ComboBox cmbAuthors;
+        private System.Windows.Forms.Button btnAddBook;
+        private Button btnAddAuthor;
+        private System.Windows.Forms.Button btnUpdate;
+        private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.Button btnRefresh;
+        private Button btnSearch;
+        private System.Windows.Forms.ProgressBar progressBarOp;
+        private Label lblTitle;
+        private Label lblISBN;
+        private Label lblPrice;
+        private Label lblFirstName;
+        private Label lblLastName;
+        private Label lblBio;
+        private Label lblAuthor;
         private Label lblSearch;
-        private Label lblFetchStatus;
-        private GroupBox grpFetch;
-        private GroupBox grpAdd;
-        private GroupBox grpUpdate;
-        private GroupBox grpDelete;
-        private GroupBox grpSearch;
-        private GroupBox grpProgress;
+        private Label lblProgressStatus;
+        private GroupBox grpBook;
+        private System.Windows.Forms.GroupBox grpAuthor;
+        private System.Windows.Forms.GroupBox grpSearch;
+        private System.Windows.Forms.GroupBox grpProgress;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel toolStripStatusLabel;
 
         protected override void Dispose(bool disposing)
         {
@@ -40,277 +42,372 @@ namespace Task_1_Week_6
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
         private void InitializeComponent()
         {
-            listBoxBooks = new ListBox();
-            btnFetchBooks = new Button();
-            progressBarOp = new ProgressBar();
-            lblFetchStatus = new Label();
-            grpFetch = new GroupBox();
-            grpAdd = new GroupBox();
-            grpUpdate = new GroupBox();
-            grpDelete = new GroupBox();
-            grpSearch = new GroupBox();
-            grpProgress = new GroupBox();
-            btnAddBook = new Button();
-            btnUpdate = new Button();
-            btnDelete = new Button();
-            btnSearch = new Button();
-            txtAuthorName = new TextBox();
-            txtBookTitle = new TextBox();
-            txtUpdateBookId = new TextBox();
-            txtUpdateTitle = new TextBox();
-            txtUpdateAuthorName = new TextBox();
-            txtDeleteBookId = new TextBox();
-            txtSearch = new TextBox();
-            lblAuthorName = new Label();
-            lblBookTitle = new Label();
-            lblUpdateBookId = new Label();
-            lblUpdateTitle = new Label();
-            lblUpdateAuthor = new Label();
-            lblDeleteBookId = new Label();
-            lblSearch = new Label();
-            grpFetch.SuspendLayout();
-            grpProgress.SuspendLayout();
-            grpAdd.SuspendLayout();
-            grpUpdate.SuspendLayout();
-            grpDelete.SuspendLayout();
+            dgvBooks = new System.Windows.Forms.DataGridView();
+            grpBook = new System.Windows.Forms.GroupBox();
+            lblTitle = new System.Windows.Forms.Label();
+            txtTitle = new System.Windows.Forms.TextBox();
+            lblISBN = new System.Windows.Forms.Label();
+            txtISBN = new System.Windows.Forms.TextBox();
+            lblPrice = new System.Windows.Forms.Label();
+            txtPrice = new System.Windows.Forms.TextBox();
+            lblAuthor = new System.Windows.Forms.Label();
+            cmbAuthors = new System.Windows.Forms.ComboBox();
+            grpAuthor = new System.Windows.Forms.GroupBox();
+            lblFirstName = new System.Windows.Forms.Label();
+            txtFirstName = new System.Windows.Forms.TextBox();
+            lblLastName = new System.Windows.Forms.Label();
+            txtLastName = new System.Windows.Forms.TextBox();
+            lblBio = new System.Windows.Forms.Label();
+            txtBio = new System.Windows.Forms.TextBox();
+            btnAddAuthor = new System.Windows.Forms.Button();
+            grpSearch = new System.Windows.Forms.GroupBox();
+            lblSearch = new System.Windows.Forms.Label();
+            txtSearch = new System.Windows.Forms.TextBox();
+            btnSearch = new System.Windows.Forms.Button();
+            grpProgress = new System.Windows.Forms.GroupBox();
+            progressBarOp = new System.Windows.Forms.ProgressBar();
+            lblProgressStatus = new System.Windows.Forms.Label();
+            btnAddBook = new System.Windows.Forms.Button();
+            btnUpdate = new System.Windows.Forms.Button();
+            btnDelete = new System.Windows.Forms.Button();
+            btnRefresh = new System.Windows.Forms.Button();
+            statusStrip1 = new System.Windows.Forms.StatusStrip();
+            toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            ((System.ComponentModel.ISupportInitialize)dgvBooks).BeginInit();
+            grpBook.SuspendLayout();
+            grpAuthor.SuspendLayout();
             grpSearch.SuspendLayout();
+            grpProgress.SuspendLayout();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
-
-            // grpFetch
-            grpFetch.Controls.Add(listBoxBooks);
-            grpFetch.Controls.Add(btnFetchBooks);
-            grpFetch.Location = new Point(12, 12);
-            grpFetch.Name = "grpFetch";
-            grpFetch.Size = new Size(560, 230);
-            grpFetch.Text = "Fetch Books (Task 1)";
-
-            // listBoxBooks
-            listBoxBooks.FormattingEnabled = true;
-            listBoxBooks.ItemHeight = 20;
-            listBoxBooks.Location = new Point(10, 50);
-            listBoxBooks.Name = "listBoxBooks";
-            listBoxBooks.Size = new Size(540, 164);
-            listBoxBooks.TabIndex = 1;
-
-            // btnFetchBooks
-            btnFetchBooks.Location = new Point(10, 15);
-            btnFetchBooks.Name = "btnFetchBooks";
-            btnFetchBooks.Size = new Size(160, 30);
-            btnFetchBooks.TabIndex = 0;
-            btnFetchBooks.Text = "Fetch Books Async";
-            btnFetchBooks.UseVisualStyleBackColor = true;
-            btnFetchBooks.Click += btnFetchBooks_Click;
-
-            // grpProgress
-            grpProgress.Controls.Add(lblFetchStatus);
-            grpProgress.Controls.Add(progressBarOp);
-            grpProgress.Location = new Point(12, 248);
-            grpProgress.Name = "grpProgress";
-            grpProgress.Size = new Size(560, 75);
-            grpProgress.Text = "Operation Progress (Task 3)";
-
-            // progressBarOp
-            progressBarOp.Location = new Point(10, 25);
-            progressBarOp.Name = "progressBarOp";
-            progressBarOp.Size = new Size(540, 25);
-            progressBarOp.Step = 1;
-
-            // lblFetchStatus
-            lblFetchStatus.AutoSize = true;
-            lblFetchStatus.Location = new Point(10, 53);
-            lblFetchStatus.Name = "lblFetchStatus";
-            lblFetchStatus.Size = new Size(109, 20);
-            lblFetchStatus.Text = "Ready";
-
-            // grpAdd
-            grpAdd.Controls.Add(btnAddBook);
-            grpAdd.Controls.Add(txtBookTitle);
-            grpAdd.Controls.Add(txtAuthorName);
-            grpAdd.Controls.Add(lblBookTitle);
-            grpAdd.Controls.Add(lblAuthorName);
-            grpAdd.Location = new Point(12, 329);
-            grpAdd.Name = "grpAdd";
-            grpAdd.Size = new Size(270, 140);
-            grpAdd.Text = "Add Book (Task 2)";
-
-            // lblAuthorName
-            lblAuthorName.AutoSize = true;
-            lblAuthorName.Location = new Point(10, 25);
-            lblAuthorName.Size = new Size(54, 20);
-            lblAuthorName.Text = "Author";
-
-            // txtAuthorName
-            txtAuthorName.Location = new Point(90, 22);
-            txtAuthorName.Name = "txtAuthorName";
-            txtAuthorName.Size = new Size(170, 27);
-            txtAuthorName.TabIndex = 0;
-
-            // lblBookTitle
-            lblBookTitle.AutoSize = true;
-            lblBookTitle.Location = new Point(10, 58);
-            lblBookTitle.Size = new Size(38, 20);
-            lblBookTitle.Text = "Title";
-
-            // txtBookTitle
-            txtBookTitle.Location = new Point(90, 55);
-            txtBookTitle.Name = "txtBookTitle";
-            txtBookTitle.Size = new Size(170, 27);
-            txtBookTitle.TabIndex = 1;
-
-            // btnAddBook
-            btnAddBook.Location = new Point(90, 95);
-            btnAddBook.Name = "btnAddBook";
-            btnAddBook.Size = new Size(170, 30);
-            btnAddBook.TabIndex = 2;
-            btnAddBook.Text = "Add Book Async";
-            btnAddBook.UseVisualStyleBackColor = true;
-            btnAddBook.Click += btnAddBook_Click;
-
-            // grpUpdate
-            grpUpdate.Controls.Add(btnUpdate);
-            grpUpdate.Controls.Add(txtUpdateAuthorName);
-            grpUpdate.Controls.Add(txtUpdateTitle);
-            grpUpdate.Controls.Add(txtUpdateBookId);
-            grpUpdate.Controls.Add(lblUpdateAuthor);
-            grpUpdate.Controls.Add(lblUpdateTitle);
-            grpUpdate.Controls.Add(lblUpdateBookId);
-            grpUpdate.Location = new Point(288, 329);
-            grpUpdate.Name = "grpUpdate";
-            grpUpdate.Size = new Size(284, 160);
-            grpUpdate.Text = "Update Book (Task 3)";
-
-            // lblUpdateBookId
-            lblUpdateBookId.AutoSize = true;
-            lblUpdateBookId.Location = new Point(10, 25);
-            lblUpdateBookId.Size = new Size(62, 20);
-            lblUpdateBookId.Text = "Book ID";
-
-            // txtUpdateBookId
-            txtUpdateBookId.Location = new Point(110, 22);
-            txtUpdateBookId.Name = "txtUpdateBookId";
-            txtUpdateBookId.Size = new Size(160, 27);
-            txtUpdateBookId.TabIndex = 0;
-
-            // lblUpdateTitle
-            lblUpdateTitle.AutoSize = true;
-            lblUpdateTitle.Location = new Point(10, 58);
-            lblUpdateTitle.Size = new Size(74, 20);
-            lblUpdateTitle.Text = "New Title";
-
-            // txtUpdateTitle
-            txtUpdateTitle.Location = new Point(110, 55);
-            txtUpdateTitle.Name = "txtUpdateTitle";
-            txtUpdateTitle.Size = new Size(160, 27);
-            txtUpdateTitle.TabIndex = 1;
-
-            // lblUpdateAuthor
-            lblUpdateAuthor.AutoSize = true;
-            lblUpdateAuthor.Location = new Point(10, 91);
-            lblUpdateAuthor.Size = new Size(90, 20);
-            lblUpdateAuthor.Text = "New Author";
-
-            // txtUpdateAuthorName
-            txtUpdateAuthorName.Location = new Point(110, 88);
-            txtUpdateAuthorName.Name = "txtUpdateAuthorName";
-            txtUpdateAuthorName.Size = new Size(160, 27);
-            txtUpdateAuthorName.TabIndex = 2;
-
-            // btnUpdate
-            btnUpdate.Location = new Point(110, 122);
-            btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(160, 30);
-            btnUpdate.TabIndex = 3;
-            btnUpdate.Text = "Update Async";
-            btnUpdate.UseVisualStyleBackColor = true;
-            btnUpdate.Click += btnUpdate_Click;
-
-            // grpDelete
-            grpDelete.Controls.Add(btnDelete);
-            grpDelete.Controls.Add(txtDeleteBookId);
-            grpDelete.Controls.Add(lblDeleteBookId);
-            grpDelete.Location = new Point(12, 475);
-            grpDelete.Name = "grpDelete";
-            grpDelete.Size = new Size(270, 100);
-            grpDelete.Text = "Delete Book (Task 3)";
-
-            // lblDeleteBookId
-            lblDeleteBookId.AutoSize = true;
-            lblDeleteBookId.Location = new Point(10, 30);
-            lblDeleteBookId.Size = new Size(62, 20);
-            lblDeleteBookId.Text = "Book ID";
-
-            // txtDeleteBookId
-            txtDeleteBookId.Location = new Point(90, 27);
-            txtDeleteBookId.Name = "txtDeleteBookId";
-            txtDeleteBookId.Size = new Size(170, 27);
-            txtDeleteBookId.TabIndex = 0;
-
-            // btnDelete
-            btnDelete.Location = new Point(90, 60);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(170, 30);
-            btnDelete.TabIndex = 1;
-            btnDelete.Text = "Delete Async";
-            btnDelete.UseVisualStyleBackColor = true;
-            btnDelete.Click += btnDelete_Click;
-
+            // 
+            // dgvBooks
+            // 
+            dgvBooks.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+            dgvBooks.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvBooks.ColumnHeadersHeight = 29;
+            dgvBooks.Location = new System.Drawing.Point(12, 74);
+            dgvBooks.Name = "dgvBooks";
+            dgvBooks.ReadOnly = true;
+            dgvBooks.RowHeadersWidth = 62;
+            dgvBooks.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgvBooks.Size = new System.Drawing.Size(860, 188);
+            dgvBooks.TabIndex = 0;
+            dgvBooks.SelectionChanged += dgvBooks_SelectionChanged;
+            // 
+            // grpBook
+            // 
+            grpBook.Controls.Add(lblTitle);
+            grpBook.Controls.Add(txtTitle);
+            grpBook.Controls.Add(lblISBN);
+            grpBook.Controls.Add(txtISBN);
+            grpBook.Controls.Add(lblPrice);
+            grpBook.Controls.Add(txtPrice);
+            grpBook.Controls.Add(lblAuthor);
+            grpBook.Controls.Add(cmbAuthors);
+            grpBook.Location = new System.Drawing.Point(12, 268);
+            grpBook.Name = "grpBook";
+            grpBook.Size = new System.Drawing.Size(440, 130);
+            grpBook.TabIndex = 1;
+            grpBook.TabStop = false;
+            grpBook.Text = "Book Details";
+            // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Location = new System.Drawing.Point(6, 30);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new System.Drawing.Size(38, 20);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Title";
+            // 
+            // txtTitle
+            // 
+            txtTitle.Location = new System.Drawing.Point(100, 27);
+            txtTitle.Name = "txtTitle";
+            txtTitle.Size = new System.Drawing.Size(320, 27);
+            txtTitle.TabIndex = 0;
+            // 
+            // lblISBN
+            // 
+            lblISBN.AutoSize = true;
+            lblISBN.Location = new System.Drawing.Point(6, 63);
+            lblISBN.Name = "lblISBN";
+            lblISBN.Size = new System.Drawing.Size(41, 20);
+            lblISBN.TabIndex = 1;
+            lblISBN.Text = "ISBN";
+            // 
+            // txtISBN
+            // 
+            txtISBN.Location = new System.Drawing.Point(100, 60);
+            txtISBN.Name = "txtISBN";
+            txtISBN.Size = new System.Drawing.Size(320, 27);
+            txtISBN.TabIndex = 1;
+            // 
+            // lblPrice
+            // 
+            lblPrice.AutoSize = true;
+            lblPrice.Location = new System.Drawing.Point(6, 96);
+            lblPrice.Name = "lblPrice";
+            lblPrice.Size = new System.Drawing.Size(41, 20);
+            lblPrice.TabIndex = 2;
+            lblPrice.Text = "Price";
+            // 
+            // txtPrice
+            // 
+            txtPrice.Location = new System.Drawing.Point(100, 93);
+            txtPrice.Name = "txtPrice";
+            txtPrice.Size = new System.Drawing.Size(100, 27);
+            txtPrice.TabIndex = 2;
+            // 
+            // lblAuthor
+            // 
+            lblAuthor.AutoSize = true;
+            lblAuthor.Location = new System.Drawing.Point(220, 96);
+            lblAuthor.Name = "lblAuthor";
+            lblAuthor.Size = new System.Drawing.Size(54, 20);
+            lblAuthor.TabIndex = 3;
+            lblAuthor.Text = "Author";
+            // 
+            // cmbAuthors
+            // 
+            cmbAuthors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbAuthors.Location = new System.Drawing.Point(280, 93);
+            cmbAuthors.Name = "cmbAuthors";
+            cmbAuthors.Size = new System.Drawing.Size(140, 28);
+            cmbAuthors.TabIndex = 3;
+            cmbAuthors.SelectedIndexChanged += cmbAuthors_SelectedIndexChanged;
+            // 
+            // grpAuthor
+            // 
+            grpAuthor.Controls.Add(lblFirstName);
+            grpAuthor.Controls.Add(txtFirstName);
+            grpAuthor.Controls.Add(lblLastName);
+            grpAuthor.Controls.Add(txtLastName);
+            grpAuthor.Controls.Add(lblBio);
+            grpAuthor.Controls.Add(txtBio);
+            grpAuthor.Controls.Add(btnAddAuthor);
+            grpAuthor.Location = new System.Drawing.Point(458, 268);
+            grpAuthor.Name = "grpAuthor";
+            grpAuthor.Size = new System.Drawing.Size(414, 176);
+            grpAuthor.TabIndex = 2;
+            grpAuthor.TabStop = false;
+            grpAuthor.Text = "Author Details";
+            // 
+            // lblFirstName
+            // 
+            lblFirstName.AutoSize = true;
+            lblFirstName.Location = new System.Drawing.Point(6, 30);
+            lblFirstName.Name = "lblFirstName";
+            lblFirstName.Size = new System.Drawing.Size(80, 20);
+            lblFirstName.TabIndex = 0;
+            lblFirstName.Text = "First Name";
+            // 
+            // txtFirstName
+            // 
+            txtFirstName.Location = new System.Drawing.Point(100, 27);
+            txtFirstName.Name = "txtFirstName";
+            txtFirstName.Size = new System.Drawing.Size(300, 27);
+            txtFirstName.TabIndex = 0;
+            // 
+            // lblLastName
+            // 
+            lblLastName.AutoSize = true;
+            lblLastName.Location = new System.Drawing.Point(6, 63);
+            lblLastName.Name = "lblLastName";
+            lblLastName.Size = new System.Drawing.Size(79, 20);
+            lblLastName.TabIndex = 1;
+            lblLastName.Text = "Last Name";
+            // 
+            // txtLastName
+            // 
+            txtLastName.Location = new System.Drawing.Point(100, 60);
+            txtLastName.Name = "txtLastName";
+            txtLastName.Size = new System.Drawing.Size(300, 27);
+            txtLastName.TabIndex = 1;
+            // 
+            // lblBio
+            // 
+            lblBio.AutoSize = true;
+            lblBio.Location = new System.Drawing.Point(6, 96);
+            lblBio.Name = "lblBio";
+            lblBio.Size = new System.Drawing.Size(31, 20);
+            lblBio.TabIndex = 2;
+            lblBio.Text = "Bio";
+            // 
+            // txtBio
+            // 
+            txtBio.Location = new System.Drawing.Point(100, 93);
+            txtBio.Name = "txtBio";
+            txtBio.Size = new System.Drawing.Size(300, 27);
+            txtBio.TabIndex = 2;
+            // 
+            // btnAddAuthor
+            // 
+            btnAddAuthor.Location = new System.Drawing.Point(100, 126);
+            btnAddAuthor.Name = "btnAddAuthor";
+            btnAddAuthor.Size = new System.Drawing.Size(150, 28);
+            btnAddAuthor.TabIndex = 3;
+            btnAddAuthor.Text = "Add Author";
+            btnAddAuthor.UseVisualStyleBackColor = true;
+            btnAddAuthor.Click += btnAddAuthor_Click;
+            // 
             // grpSearch
-            grpSearch.Controls.Add(btnSearch);
-            grpSearch.Controls.Add(txtSearch);
+            // 
             grpSearch.Controls.Add(lblSearch);
-            grpSearch.Location = new Point(288, 495);
+            grpSearch.Controls.Add(txtSearch);
+            grpSearch.Controls.Add(btnSearch);
+            grpSearch.Location = new System.Drawing.Point(12, 12);
             grpSearch.Name = "grpSearch";
-            grpSearch.Size = new Size(284, 80);
-            grpSearch.Text = "Search (Task 3)";
-
+            grpSearch.Size = new System.Drawing.Size(860, 55);
+            grpSearch.TabIndex = 5;
+            grpSearch.TabStop = false;
+            grpSearch.Text = "Search Books";
+            // 
             // lblSearch
+            // 
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(10, 25);
-            lblSearch.Size = new Size(42, 20);
-            lblSearch.Text = "Title";
-
+            lblSearch.Location = new System.Drawing.Point(10, 25);
+            lblSearch.Name = "lblSearch";
+            lblSearch.Size = new System.Drawing.Size(86, 20);
+            lblSearch.TabIndex = 0;
+            lblSearch.Text = "Search Title";
+            // 
             // txtSearch
-            txtSearch.Location = new Point(60, 22);
+            // 
+            txtSearch.Location = new System.Drawing.Point(100, 22);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(100, 27);
+            txtSearch.Size = new System.Drawing.Size(640, 27);
             txtSearch.TabIndex = 0;
-
+            // 
             // btnSearch
-            btnSearch.Location = new Point(170, 20);
+            // 
+            btnSearch.Location = new System.Drawing.Point(750, 20);
             btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(100, 30);
+            btnSearch.Size = new System.Drawing.Size(100, 30);
             btnSearch.TabIndex = 1;
-            btnSearch.Text = "Search Async";
+            btnSearch.Text = "Search";
             btnSearch.UseVisualStyleBackColor = true;
             btnSearch.Click += btnSearch_Click;
-
+            // 
+            // grpProgress
+            // 
+            grpProgress.Controls.Add(progressBarOp);
+            grpProgress.Controls.Add(lblProgressStatus);
+            grpProgress.Location = new System.Drawing.Point(12, 469);
+            grpProgress.Name = "grpProgress";
+            grpProgress.Size = new System.Drawing.Size(860, 55);
+            grpProgress.TabIndex = 6;
+            grpProgress.TabStop = false;
+            grpProgress.Text = "Operation Progress";
+            // 
+            // progressBarOp
+            // 
+            progressBarOp.Location = new System.Drawing.Point(14, 20);
+            progressBarOp.Name = "progressBarOp";
+            progressBarOp.Size = new System.Drawing.Size(700, 25);
+            progressBarOp.TabIndex = 0;
+            // 
+            // lblProgressStatus
+            // 
+            lblProgressStatus.AutoSize = true;
+            lblProgressStatus.Location = new System.Drawing.Point(720, 25);
+            lblProgressStatus.Name = "lblProgressStatus";
+            lblProgressStatus.Size = new System.Drawing.Size(50, 20);
+            lblProgressStatus.TabIndex = 1;
+            lblProgressStatus.Text = "Ready";
+            // 
+            // btnAddBook
+            // 
+            btnAddBook.Location = new System.Drawing.Point(25, 404);
+            btnAddBook.Name = "btnAddBook";
+            btnAddBook.Size = new System.Drawing.Size(100, 40);
+            btnAddBook.TabIndex = 3;
+            btnAddBook.Text = "Add Book";
+            btnAddBook.UseVisualStyleBackColor = true;
+            btnAddBook.Click += btnAddBook_Click;
+            // 
+            // btnUpdate
+            // 
+            btnUpdate.Location = new System.Drawing.Point(131, 404);
+            btnUpdate.Name = "btnUpdate";
+            btnUpdate.Size = new System.Drawing.Size(100, 40);
+            btnUpdate.TabIndex = 4;
+            btnUpdate.Text = "Update";
+            btnUpdate.UseVisualStyleBackColor = true;
+            btnUpdate.Click += btnUpdate_Click;
+            // 
+            // btnDelete
+            // 
+            btnDelete.Location = new System.Drawing.Point(237, 404);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new System.Drawing.Size(100, 40);
+            btnDelete.TabIndex = 5;
+            btnDelete.Text = "Delete";
+            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.Location = new System.Drawing.Point(343, 404);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new System.Drawing.Size(100, 40);
+            btnRefresh.TabIndex = 6;
+            btnRefresh.Text = "Refresh";
+            btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.Click += btnRefresh_Click;
+            // 
+            // statusStrip1
+            // 
+            statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripStatusLabel });
+            statusStrip1.Location = new System.Drawing.Point(0, 595);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new System.Drawing.Size(884, 26);
+            statusStrip1.TabIndex = 7;
+            // 
+            // toolStripStatusLabel
+            // 
+            toolStripStatusLabel.Name = "toolStripStatusLabel";
+            toolStripStatusLabel.Size = new System.Drawing.Size(50, 20);
+            toolStripStatusLabel.Text = "Ready";
+            // 
             // Form1
-            AutoScaleDimensions = new SizeF(8, 20);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(584, 591);
-            Controls.Add(grpSearch);
-            Controls.Add(grpDelete);
-            Controls.Add(grpUpdate);
-            Controls.Add(grpAdd);
+            // 
+            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(884, 621);
+            Controls.Add(btnRefresh);
+            Controls.Add(btnDelete);
+            Controls.Add(btnUpdate);
+            Controls.Add(btnAddBook);
             Controls.Add(grpProgress);
-            Controls.Add(grpFetch);
-            Name = "Form1";
-            Text = "Week 6 - Event-Driven & Async Bookstore";
+            Controls.Add(grpSearch);
+            Controls.Add(grpAuthor);
+            Controls.Add(grpBook);
+            Controls.Add(dgvBooks);
+            Controls.Add(statusStrip1);
+            Text = "Week 6 - Async Bookstore";
             Load += Form1_Load;
-            grpFetch.ResumeLayout(false);
-            grpProgress.ResumeLayout(false);
-            grpProgress.PerformLayout();
-            grpAdd.ResumeLayout(false);
-            grpAdd.PerformLayout();
-            grpUpdate.ResumeLayout(false);
-            grpUpdate.PerformLayout();
-            grpDelete.ResumeLayout(false);
-            grpDelete.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvBooks).EndInit();
+            grpBook.ResumeLayout(false);
+            grpBook.PerformLayout();
+            grpAuthor.ResumeLayout(false);
+            grpAuthor.PerformLayout();
             grpSearch.ResumeLayout(false);
             grpSearch.PerformLayout();
+            grpProgress.ResumeLayout(false);
+            grpProgress.PerformLayout();
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
     }
 }
