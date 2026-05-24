@@ -42,7 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lab3", "lab3\lab3.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lab4", "lab4\lab4.csproj", "{017C81E8-BA08-477D-A13F-F80EC944BFBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lab5", "lab5\lab5.csproj", "{7C8BDD2C-A4FC-4B03-B8A7-AD6163851D96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task-1_Week-5", "Task-1_Week-5\Task-1_Week-5.csproj", "{7C8BDD2C-A4FC-4B03-B8A7-AD6163851D96}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lab6", "lab6\lab6.csproj", "{D0822CAF-A07F-4985-91DA-440AB7B0575F}"
 EndProject
