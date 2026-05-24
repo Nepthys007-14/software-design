@@ -166,6 +166,7 @@ namespace Task_1_Week_8
             btnSearch.Enabled = enabled;
             btnFetchBook.Enabled = enabled;
             btnAuthorSearch.Enabled = enabled;
+            btnClearCache.Enabled = enabled;
         }
 
         // ========== CRUD Operations (Week 6 style) ==========
@@ -681,6 +682,14 @@ namespace Task_1_Week_8
             {
                 SetControlsEnabled(true);
             }
+        }
+
+        private void btnClearCache_Click(object? sender, EventArgs e)
+        {
+            GoogleBooksService.ClearCache();
+            toolStripStatusLabel.Text = "API cache cleared";
+            lblProgressStatus.Text = "Cache cleared";
+            MessageBox.Show("Google Books API cache has been cleared.", "Cache Cleared");
         }
     }
 }
