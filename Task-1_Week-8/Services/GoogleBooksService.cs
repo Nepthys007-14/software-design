@@ -10,6 +10,13 @@ namespace Task_1_Week_8.Services
         private static readonly ConcurrentDictionary<string, (object? Data, DateTime Expiry)> _cache = new();
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
         private const int MaxRetries = 3;
+        private static string _apiKey = "";
+
+        public static string ApiKey
+        {
+            get => _apiKey;
+            set => _apiKey = value ?? "";
+        }
 
         public GoogleBooksService()
         {
@@ -24,6 +31,12 @@ namespace Task_1_Week_8.Services
         public static void ClearCache()
         {
             _cache.Clear();
+        }
+
+        private string BuildUrl(string path)
+        {
+            var separator = path.Contains('?') ? "&" : "?";
+            return string.IsNullOrWhiteSpace(_apiKey) ? path : $"{path}{separator}key={_apiKey}";
         }
 
         public async Task<GoogleVolumeInfo?> GetBookByIsbnAsync(string isbn, CancellationToken ct = default)
@@ -41,7 +54,7 @@ namespace Task_1_Week_8.Services
                 ct.ThrowIfCancellationRequested();
 
                 var response = await _httpClient.GetAsync(
-                    $"volumes?q=isbn:{cleanIsbn}",
+                    BuildUrl($"volumes?q=isbn:{cleanIsbn}"),
                     HttpCompletionOption.ResponseContentRead,
                     ct);
 
@@ -85,7 +98,7 @@ namespace Task_1_Week_8.Services
                 ct.ThrowIfCancellationRequested();
 
                 var response = await _httpClient.GetAsync(
-                    $"volumes?q=inauthor:{encodedQuery}&startIndex={startIndex}&maxResults={maxResults}",
+                    BuildUrl($"volumes?q=inauthor:{encodedQuery}&startIndex={startIndex}&maxResults={maxResults}"),
                     HttpCompletionOption.ResponseContentRead,
                     ct);
 

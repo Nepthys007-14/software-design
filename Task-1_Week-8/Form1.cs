@@ -691,5 +691,20 @@ namespace Task_1_Week_8
             lblProgressStatus.Text = "Cache cleared";
             MessageBox.Show("Google Books API cache has been cleared.", "Cache Cleared");
         }
+
+        private void btnSetApiKey_Click(object? sender, EventArgs e)
+        {
+            var key = txtApiKey.Text.Trim();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                MessageBox.Show("Enter your Google Books API key.", "No Key");
+                return;
+            }
+            GoogleBooksService.ApiKey = key;
+            GoogleBooksService.ClearCache();
+            toolStripStatusLabel.Text = "API key set";
+            lblProgressStatus.Text = "API key updated";
+            MessageBox.Show("API key has been set. Cache cleared.", "API Key Set");
+        }
     }
 }

@@ -26,6 +26,8 @@
         private Button btnApiPrevPage;
         private Button btnApiNextPage;
         private Button btnClearCache;
+        private TextBox txtApiKey;
+        private Button btnSetApiKey;
         private ProgressBar progressBarOp;
         private Label lblTitle;
         private Label lblISBN;
@@ -302,6 +304,8 @@
             grpGoogleApi.Controls.Add(lblApiPageNumber);
             grpGoogleApi.Controls.Add(btnApiNextPage);
             grpGoogleApi.Controls.Add(btnClearCache);
+            grpGoogleApi.Controls.Add(txtApiKey);
+            grpGoogleApi.Controls.Add(btnSetApiKey);
             grpGoogleApi.Location = new Point(12, 602);
             grpGoogleApi.Name = "grpGoogleApi";
             grpGoogleApi.Size = new Size(860, 280);
@@ -388,13 +392,30 @@
             btnApiNextPage.Click += btnApiNextPage_Click;
 
             btnClearCache = new Button();
-            btnClearCache.Location = new Point(720, 230);
+            btnClearCache.Location = new Point(720, 220);
             btnClearCache.Name = "btnClearCache";
-            btnClearCache.Size = new Size(125, 30);
+            btnClearCache.Size = new Size(125, 27);
             btnClearCache.TabIndex = 9;
             btnClearCache.Text = "Clear Cache";
             btnClearCache.UseVisualStyleBackColor = true;
             btnClearCache.Click += btnClearCache_Click;
+
+            // API Key row
+            btnSetApiKey = new Button();
+            txtApiKey = new TextBox();
+            txtApiKey.Location = new Point(10, 250);
+            txtApiKey.Name = "txtApiKey";
+            txtApiKey.Size = new Size(680, 27);
+            txtApiKey.TabIndex = 10;
+            txtApiKey.PlaceholderText = "Paste your Google Books API key here...";
+
+            btnSetApiKey.Location = new Point(700, 248);
+            btnSetApiKey.Name = "btnSetApiKey";
+            btnSetApiKey.Size = new Size(145, 28);
+            btnSetApiKey.TabIndex = 11;
+            btnSetApiKey.Text = "Set API Key";
+            btnSetApiKey.UseVisualStyleBackColor = true;
+            btnSetApiKey.Click += btnSetApiKey_Click;
 
             // buttons
             btnAddBook.Location = new Point(12, 434);
