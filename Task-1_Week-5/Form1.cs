@@ -7,7 +7,7 @@ namespace Task_1_Week_5
     public partial class Form1 : Form
     {
         private BookstoreContext _context;
-        private Book? _selectedBook;
+        private int? _selectedBookId;
         private bool _isLoading;
 
         public Form1()
@@ -69,23 +69,29 @@ namespace Task_1_Week_5
         {
             if (dgvBooks.CurrentRow?.Cells["Id"].Value is not int bookId) return;
 
-            _selectedBook = _context.Books
+            var book = _context.Books
+                .AsNoTracking()
                 .Include(b => b.Author)
                 .FirstOrDefault(b => b.Id == bookId);
 
-            if (_selectedBook == null) return;
+            if (book == null) return;
 
-            txtTitle.Text = _selectedBook.Title;
-            txtISBN.Text = _selectedBook.ISBN;
-            txtPrice.Text = _selectedBook.Price.ToString();
+            _isLoading = true;
+            _selectedBookId = bookId;
 
-            if (_selectedBook.Author != null)
+            txtTitle.Text = book.Title;
+            txtISBN.Text = book.ISBN;
+            txtPrice.Text = book.Price.ToString();
+
+            if (book.Author != null)
             {
-                cmbAuthors.SelectedValue = _selectedBook.AuthorId;
-                txtFirstName.Text = _selectedBook.Author.FirstName;
-                txtLastName.Text = _selectedBook.Author.LastName;
-                txtBio.Text = _selectedBook.Author.Bio;
+                cmbAuthors.SelectedValue = book.AuthorId;
+                txtFirstName.Text = book.Author.FirstName;
+                txtLastName.Text = book.Author.LastName;
+                txtBio.Text = book.Author.Bio;
             }
+
+            _isLoading = false;
         }
 
         private void ClearFields()
@@ -96,7 +102,7 @@ namespace Task_1_Week_5
             txtFirstName.Clear();
             txtLastName.Clear();
             txtBio.Clear();
-            _selectedBook = null;
+            _selectedBookId = null;
             if (cmbAuthors.Items.Count > 0)
                 cmbAuthors.SelectedIndex = 0;
         }
@@ -177,7 +183,7 @@ namespace Task_1_Week_5
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (_selectedBook == null)
+            if (_selectedBookId == null)
             {
                 MessageBox.Show("Please select a book to update.", "No Selection");
                 return;
@@ -194,14 +200,26 @@ namespace Task_1_Week_5
 
             try
             {
-                _selectedBook.Title = txtTitle.Text.Trim();
-                _selectedBook.ISBN = txtISBN.Text.Trim();
-                _selectedBook.Price = price;
+                var book = _context.Books
+                    .Include(b => b.Author)
+                    .FirstOrDefault(b => b.Id == _selectedBookId.Value);
+
+                if (book == null)
+                {
+                    MessageBox.Show("Book no longer exists in the database.", "Not Found");
+                    ClearFields();
+                    LoadBooks();
+                    return;
+                }
+
+                book.Title = txtTitle.Text.Trim();
+                book.ISBN = txtISBN.Text.Trim();
+                book.Price = price;
 
                 if (cmbAuthors.SelectedValue is int selectedAuthorId)
-                    _selectedBook.AuthorId = selectedAuthorId;
+                    book.AuthorId = selectedAuthorId;
 
-                var author = _context.Authors.Find(_selectedBook.AuthorId);
+                var author = _context.Authors.Find(book.AuthorId);
                 if (author != null)
                 {
                     author.FirstName = txtFirstName.Text.Trim();
@@ -224,7 +242,7 @@ namespace Task_1_Week_5
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (_selectedBook == null)
+            if (_selectedBookId == null)
             {
                 MessageBox.Show("Please select a book to delete.", "No Selection");
                 return;
@@ -237,24 +255,21 @@ namespace Task_1_Week_5
 
             try
             {
-                _context.ChangeTracker.Clear();
-
-                var bookToDelete = _context.Books.Find(_selectedBook.Id);
+                var bookToDelete = _context.Books.Find(_selectedBookId.Value);
                 if (bookToDelete == null)
                 {
                     MessageBox.Show("Book no longer exists in the database.", "Not Found");
-                    LoadBooks();
                     ClearFields();
+                    LoadBooks();
                     return;
                 }
 
                 _context.Books.Remove(bookToDelete);
                 _context.SaveChanges();
 
-                _selectedBook = null;
+                ClearFields();
                 LoadAuthors();
                 LoadBooks();
-                ClearFields();
                 MessageBox.Show("Book deleted successfully.", "Success");
             }
             catch (Exception ex)
