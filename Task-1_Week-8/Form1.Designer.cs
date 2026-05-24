@@ -25,6 +25,7 @@
         private Button btnAuthorSearch;
         private Button btnApiPrevPage;
         private Button btnApiNextPage;
+        private Button btnClearCache;
         private ProgressBar progressBarOp;
         private Label lblTitle;
         private Label lblISBN;
@@ -300,6 +301,7 @@
             grpGoogleApi.Controls.Add(btnApiPrevPage);
             grpGoogleApi.Controls.Add(lblApiPageNumber);
             grpGoogleApi.Controls.Add(btnApiNextPage);
+            grpGoogleApi.Controls.Add(btnClearCache);
             grpGoogleApi.Location = new Point(12, 602);
             grpGoogleApi.Name = "grpGoogleApi";
             grpGoogleApi.Size = new Size(860, 280);
@@ -384,6 +386,15 @@
             btnApiNextPage.UseVisualStyleBackColor = true;
             btnApiNextPage.Enabled = false;
             btnApiNextPage.Click += btnApiNextPage_Click;
+
+            btnClearCache = new Button();
+            btnClearCache.Location = new Point(720, 230);
+            btnClearCache.Name = "btnClearCache";
+            btnClearCache.Size = new Size(125, 30);
+            btnClearCache.TabIndex = 9;
+            btnClearCache.Text = "Clear Cache";
+            btnClearCache.UseVisualStyleBackColor = true;
+            btnClearCache.Click += btnClearCache_Click;
 
             // buttons
             btnAddBook.Location = new Point(12, 434);
